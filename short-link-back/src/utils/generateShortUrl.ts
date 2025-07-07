@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from "../config/prisma";
 
 // Generate alias length from 2 to 5 characters
 const generateAlias = () => {
