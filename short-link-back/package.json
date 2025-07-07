@@ -3,8 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "prisma:generate": "prisma generate",
+        "dev": "npm run prisma:generate && nodemon --watch prisma --exec ts-node app.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon app.ts",
         "build": "npx tsc",
         "start": "node backDist/app.js"
     },

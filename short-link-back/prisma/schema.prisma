@@ -22,5 +22,5 @@ model Visit {
   ip     String
   date   DateTime @default(now())
   urlId  String
-  url    Url      @relation(fields: [urlId], references: [id])
+  url    Url      @relation(fields: [urlId], references: [id], onDelete: Cascade)
 }

@@ -1,4 +1,7 @@
 import { prisma } from '../config/prisma';
+import notFound from '../errors/notFound';
+import serverError from '../errors/serverError';
+import { OK_CODE } from '../states/states';
 import { RequestHandler } from './types';
 
 export const deleteUrl: RequestHandler = async (req, res, next) => {
@@ -8,20 +11,17 @@ export const deleteUrl: RequestHandler = async (req, res, next) => {
         const deletedUrl = await prisma.url.delete({
             where: { alias: shortUrl },
         });
-
-        if (!deletedUrl) {
-            return res.status(404).json({ error: 'Short URL not found' });
-        }
-        await prisma.visit.deleteMany({
-            where: { urlId: deletedUrl.id },
-        });
-
-        res.status(200).json({
+        return res.status(OK_CODE).json({
             message: 'Short URL deleted successfully',
             deletedUrl,
         });
-    } catch (error) {
-        console.error('Error deleting URL:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+    } catch (error: any) {
+        if (error.code === 'P2025') {
+            return next(notFound(`Short URL ${shortUrl} not found`));
+        }
+        console.error(error);
+        return next(
+            serverError(`Error deleting URL ${shortUrl}: ${error.message}`),
+        );
     }
 };

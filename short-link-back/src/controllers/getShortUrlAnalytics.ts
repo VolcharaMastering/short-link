@@ -1,4 +1,7 @@
 import { prisma } from '../config/prisma';
+import notFound from '../errors/notFound';
+import serverError from '../errors/serverError';
+import { OK_CODE } from '../states/states';
 import { RequestHandler } from './types';
 
 export const getShortUrlAnalytics: RequestHandler = async (req, res, next) => {
@@ -25,12 +28,15 @@ export const getShortUrlAnalytics: RequestHandler = async (req, res, next) => {
         });
 
         if (!urlAnalytics) {
-            return res.status(404).json({ error: 'Short URL not found' });
+            next(notFound(`Short URL ${shortUrl} not found`));
         }
 
-        res.status(200).json(urlAnalytics);
-    } catch (error) {
-        console.error('Error fetching URL analytics:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(OK_CODE).json(urlAnalytics);
+    } catch (error: Error | any) {
+        next(
+            serverError(
+                `Error fetching analytics for short URL ${shortUrl}: ${error.message}`,
+            ),
+        );
     }
 };

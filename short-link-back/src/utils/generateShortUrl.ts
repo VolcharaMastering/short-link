@@ -1,4 +1,5 @@
-import { prisma } from "../config/prisma";
+import { prisma } from '../config/prisma';
+import serverError from '../errors/serverError';
 
 // Generate alias length from 2 to 5 characters
 const generateAlias = () => {
@@ -38,9 +39,10 @@ export const generateShortUrl = async (
                 });
                 const shortUrl = `${process.env.HTTP_HOST}/${finalAlias}`;
                 return shortUrl;
-            } catch (error) {
-                console.error(error);
-                throw new Error('Failed to create short URL');
+            } catch (error: Error | any) {
+                return serverError(
+                    `Failed to create short URL: ${error.message}`,
+                );
             }
         } else {
             // Alias already exists, generate a new one

@@ -1,22 +1,31 @@
-import { findOriginalUrlByShortUrl } from "../utils/findOriginalUrlByShortUrl";
-import { RequestHandler } from "./types";
+import { findOriginalUrlByShortUrl } from '../utils/findOriginalUrlByShortUrl';
+import { RequestHandler } from './types';
 import NotFound from '../errors/notFound';
-import { getClientIp } from "../utils/getClientIp";
+import { getClientIp } from '../utils/getClientIp';
+import serverError from '../errors/serverError';
 
 export const redirectToOriginalUrl: RequestHandler = async (req, res, next) => {
-  const { shortUrl } = req.params;
-  const ip = getClientIp(req);
-  console.log("request from IP", ip, "for short URL:", shortUrl);
+    const { shortUrl } = req.params;
+    const ip = getClientIp(req);
 
-  try {
-    const originalUrl = await findOriginalUrlByShortUrl(shortUrl, ip);
+    try {
+        const originalUrl = await findOriginalUrlByShortUrl(shortUrl, ip);
 
-    if (!originalUrl) {
-      return next(NotFound('Short URL not found'));
+        if (!originalUrl) {
+            next(NotFound(`Short URL ${shortUrl} not found`));
+            return;
+        }
+
+        return res.redirect(302, originalUrl);
+    } catch (error: Error | any) {
+        if (error.code === 'P2025') {
+            next(NotFound(`Short URL ${shortUrl} not found`));
+            return;
+        }
+        next(
+            serverError(
+                `Error redirecting to original URL for ${shortUrl}: ${error.message}`,
+            ),
+        );
     }
-
-    return res.redirect(302, originalUrl);
-  } catch (err) {
-    next(err);
-  }
 };

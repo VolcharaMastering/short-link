@@ -1,5 +1,7 @@
 import { prisma } from '../config/prisma';
 import { RequestHandler } from './types';
+import { OK_CODE } from '../states/states';
+import serverError from '../errors/serverError';
 
 export const getAllUrlsData: RequestHandler = async (req, res, next) => {
     try {
@@ -12,9 +14,9 @@ export const getAllUrlsData: RequestHandler = async (req, res, next) => {
                 clickCount: true,
             },
         });
-        res.status(200).json(urlsData);
-    } catch (error) {
-        console.error('Error fetching short URLs:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(OK_CODE).json(urlsData);
+    } catch (error: Error | any) {
+        next(serverError(`Error fetching short URLs: ${error.message}`));
+        return;
     }
 };
