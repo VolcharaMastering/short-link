@@ -29,6 +29,7 @@ export const getShortUrlAnalytics: RequestHandler = async (req, res, next) => {
 
         if (!urlAnalytics) {
             next(notFound(`Short URL ${shortUrl} not found`));
+            return;
         }
 
         res.status(OK_CODE).json(urlAnalytics);
@@ -38,5 +39,6 @@ export const getShortUrlAnalytics: RequestHandler = async (req, res, next) => {
                 `Error fetching analytics for short URL ${shortUrl}: ${error.message}`,
             ),
         );
+        return;
     }
 };

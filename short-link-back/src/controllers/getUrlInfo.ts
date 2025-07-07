@@ -36,5 +36,6 @@ export const getUrlInfo: RequestHandler = async (req, res, next) => {
                 `Error fetching URL info for ${shortUrl}: ${error.message}`,
             ),
         );
+        return;
     }
 };

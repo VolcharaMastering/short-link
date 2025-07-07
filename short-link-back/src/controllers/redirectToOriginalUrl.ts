@@ -3,6 +3,7 @@ import { RequestHandler } from './types';
 import NotFound from '../errors/notFound';
 import { getClientIp } from '../utils/getClientIp';
 import serverError from '../errors/serverError';
+import { CODE_REDIRECT } from '../states/states';
 
 export const redirectToOriginalUrl: RequestHandler = async (req, res, next) => {
     const { shortUrl } = req.params;
@@ -16,7 +17,7 @@ export const redirectToOriginalUrl: RequestHandler = async (req, res, next) => {
             return;
         }
 
-        return res.redirect(302, originalUrl);
+        return res.redirect(CODE_REDIRECT, originalUrl);
     } catch (error: Error | any) {
         if (error.code === 'P2025') {
             next(NotFound(`Short URL ${shortUrl} not found`));
@@ -27,5 +28,6 @@ export const redirectToOriginalUrl: RequestHandler = async (req, res, next) => {
                 `Error redirecting to original URL for ${shortUrl}: ${error.message}`,
             ),
         );
+        return;
     }
 };

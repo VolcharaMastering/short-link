@@ -21,5 +21,6 @@ export const shortenLink: RequestHandler = async (req, res, next) => {
                 `Error generating short URL for ${originalUrl}: ${error.message}`,
             ),
         );
+        return;
     }
 };
