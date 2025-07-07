@@ -1,0 +1,14 @@
+services:
+    test-shl-pg:
+        image: postgres:16
+        container_name: test-shl-pg
+        restart: always
+        environment:
+            POSTGRES_USER: ${PGUSER}
+            POSTGRES_PASSWORD: ${PGPASSWORD}
+            POSTGRES_DB: ${PGDATABASE}
+        volumes:
+            - ../data/pg:/data/db/pg
+            - ./dumps:/dumps
+        ports:
+            - '5432:5432'
