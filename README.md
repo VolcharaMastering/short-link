@@ -101,7 +101,7 @@ cd short-link-back
 npm run dev
 ```
 
-By default, the API will be available at `http://localhost:4000`.
+By default, the API will be available at `http://localhost:8081`.
 
 #### Frontend
 
