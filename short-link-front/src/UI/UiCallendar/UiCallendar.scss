@@ -1,0 +1,18 @@
+@import "../../styles/block-mixins.scss";
+
+.callendar {
+    @include form-element-parent($max-width: var(--max-width));
+    .callendar__label {
+        @include form-element-label();
+        margin: 20px 0;
+    }
+    .callendar__error-message {
+        @include form-element-error-message;
+    }
+}
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+}
